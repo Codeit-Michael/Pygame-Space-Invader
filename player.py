@@ -10,7 +10,7 @@ class Player(pygame.sprite.Sprite):
 
 		# player status
 		self.direction = pygame.math.Vector2(0, 0)
-		self.lives = 5
+		self.life = 5
 
 	def update(self, screen):
 		pygame.draw.rect(screen, self.color, self.rect)

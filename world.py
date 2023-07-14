@@ -1,6 +1,6 @@
 import pygame
 from player import Player
-from settings import HEIGHT, WIDTH, player_size, border_thickness
+from settings import HEIGHT, WIDTH, player_size, border_thickness, nav_thickness
 from game import Game
 
 class World:
@@ -11,7 +11,8 @@ class World:
 
 		self.color = pygame.Color("indigo")
 		self.boundary = pygame.Rect(WIDTH // 2 - (border_thickness // 2), 0, border_thickness, HEIGHT)
-		self.game = Game()
+		self.players = pygame.sprite.Group()
+		self.game = Game(self.screen)
 
 		self._generate_world()
 
@@ -22,8 +23,16 @@ class World:
 		posA, posB = (player_x - center_size, player_y - center_size), ((player_x * 3) - center_size, player_y - center_size)
 		self.playerA = Player(posA, player_size)
 		self.playerB = Player(posB, player_size)
-		# self.players.add(playerA)
-		# self.players.add(playerB)
+
+	def add_additionals(self):
+		# add border
+		pygame.draw.rect(self.screen, self.color, self.boundary)
+
+		# add nav
+		nav = pygame.Rect(0, HEIGHT, WIDTH, nav_thickness)
+		nav_border = pygame.Rect((WIDTH // 2) - (border_thickness // 2), HEIGHT, border_thickness, nav_thickness)
+		pygame.draw.rect(self.screen, pygame.Color("gray"), nav)
+		pygame.draw.rect(self.screen, pygame.Color("darkslategray"), nav_border)
 
 	def _player_move(self):
 		keys = pygame.key.get_pressed()
@@ -56,7 +65,11 @@ class World:
 				self.playerB.rect.y += self.player_speed
 
 	def update(self):
-		pygame.draw.rect(self.screen, self.color, self.boundary)
-		self.game.show_life(self.screen)
+		# add border and nav
+		self.add_additionals()
+		
 		self.playerA.update(self.screen)
+		self.game.show_life(self.playerA)
+		
 		self.playerB.update(self.screen)
+		self.game.show_life(self.playerB)
