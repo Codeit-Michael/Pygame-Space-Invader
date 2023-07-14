@@ -7,9 +7,7 @@ class World:
 	def __init__(self, screen):
 		self.screen = screen
 		self.game_over = False
-		self.player_speed = 3
 
-		self.color = pygame.Color("indigo")
 		self.boundary = pygame.Rect(WIDTH // 2 - (border_thickness // 2), 0, border_thickness, HEIGHT)
 		self.players = pygame.sprite.Group()
 		self.game = Game(self.screen)
@@ -26,7 +24,8 @@ class World:
 
 	def add_additionals(self):
 		# add border
-		pygame.draw.rect(self.screen, self.color, self.boundary)
+		color = pygame.Color("indigo")
+		pygame.draw.rect(self.screen, color, self.boundary)
 
 		# add nav
 		nav = pygame.Rect(0, HEIGHT, WIDTH, nav_thickness)
@@ -34,35 +33,34 @@ class World:
 		pygame.draw.rect(self.screen, pygame.Color("gray"), nav)
 		pygame.draw.rect(self.screen, pygame.Color("darkslategray"), nav_border)
 
-	def _player_move(self):
+	def player_move(self):
 		keys = pygame.key.get_pressed()
-		center_size = border_thickness // 2
 
 		if keys[pygame.K_a]:
 			if self.playerA.rect.left > 0:
-				self.playerA.rect.x -= self.player_speed
+				self.playerA.move_left()
 		if keys[pygame.K_w]:
 			if self.playerA.rect.top > 0:
-				self.playerA.rect.y -= self.player_speed
+				self.playerA.move_up()
 		if keys[pygame.K_d]:
 			if self.playerA.rect.right < self.boundary.left:
-				self.playerA.rect.x += self.player_speed
+				self.playerA.move_right()
 		if keys[pygame.K_s]:
 			if self.playerA.rect.bottom < HEIGHT:
-				self.playerA.rect.y += self.player_speed
+				self.playerA.move_bottom()
 
 		if keys[pygame.K_LEFT]:
 			if self.playerB.rect.left > self.boundary.right:
-				self.playerB.rect.x -= self.player_speed
+				self.playerB.move_left()
 		if keys[pygame.K_UP]:
 			if self.playerB.rect.top > 0:
-				self.playerB.rect.y -= self.player_speed
+				self.playerB.move_up()
 		if keys[pygame.K_RIGHT]:
 			if self.playerB.rect.right < WIDTH:
-				self.playerB.rect.x += self.player_speed
+				self.playerB.move_right()
 		if keys[pygame.K_DOWN]:
 			if self.playerB.rect.bottom < HEIGHT:
-				self.playerB.rect.y += self.player_speed
+				self.playerB.move_bottom()
 
 	def update(self):
 		# add border and nav
