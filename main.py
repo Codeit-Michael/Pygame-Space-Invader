@@ -25,7 +25,7 @@ class Main:
 			world.player_move()
 			world.update()
 			pygame.display.update()
-			self.FPS.tick(60)
+			self.FPS.tick(30)
 
 
 if __name__ == "__main__":
