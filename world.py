@@ -1,5 +1,5 @@
 import pygame
-from player import Player
+from ship import Ship
 from settings import HEIGHT, WIDTH, player_size, border_thickness, nav_thickness
 from game import Game
 
@@ -18,7 +18,7 @@ class World:
 		player_x, player_y = WIDTH // 2, HEIGHT - (player_size * 2) 
 		center_size = player_size // 2
 		player_pos = (player_x - center_size, player_y - center_size)
-		self.player.add(Player(player_pos, player_size))
+		self.player.add(Ship(player_pos, player_size))
 
 	def add_additionals(self):
 		# add nav
