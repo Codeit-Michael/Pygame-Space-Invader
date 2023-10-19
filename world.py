@@ -1,6 +1,7 @@
 import pygame
 from ship import Ship
-from settings import HEIGHT, WIDTH, player_size, border_thickness, nav_thickness
+from alien import Alien
+from settings import HEIGHT, WIDTH, player_size, enemy_size, border_thickness, nav_thickness
 from game import Game
 
 class World:
@@ -9,16 +10,27 @@ class World:
 		self.game_over = False
 
 		self.player = pygame.sprite.GroupSingle()
+		self.alien = pygame.sprite.Group()
 		self.game = Game(self.screen)
 
 		self._generate_world()
 
 	# create and add player to the screen
 	def _generate_world(self):
+		# create the player's ship
 		player_x, player_y = WIDTH // 2, HEIGHT - (player_size * 2) 
 		center_size = player_size // 2
 		player_pos = (player_x - center_size, player_y - center_size)
 		self.player.add(Ship(player_pos, player_size))
+
+		# create enemy's/alien's ship
+			# enemy random spawning should be regulated as long as player not died yet (spawn delay: 3 secs)
+			# could also work for one-time spawn
+			# could also be if one pattern spawn, and only repeat spawn once first set is done
+		enemy_x, enemy_y = WIDTH // 2, HEIGHT // 4 
+		center = enemy_size // 2
+		enemy_pos = (enemy_x - center, enemy_y - center)
+		self.alien.add(Alien(enemy_pos, enemy_size))
 
 	def add_additionals(self):
 		# add nav
@@ -47,5 +59,8 @@ class World:
 		
 		self.player.update()
 		self.player.draw(self.screen)
+
+		# alien rendering
+		self.alien.draw(self.screen)
 
 		self.game.show_life(self.player.sprite.life)
