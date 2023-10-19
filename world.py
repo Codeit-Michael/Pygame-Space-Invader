@@ -8,7 +8,7 @@ class World:
 		self.screen = screen
 		self.game_over = False
 
-		self.players = pygame.sprite.Group()
+		self.player = pygame.sprite.GroupSingle()
 		self.game = Game(self.screen)
 
 		self._generate_world()
@@ -18,7 +18,7 @@ class World:
 		player_x, player_y = WIDTH // 2, HEIGHT - (player_size * 2) 
 		center_size = player_size // 2
 		player_pos = (player_x - center_size, player_y - center_size)
-		self.player = Player(player_pos, player_size)
+		self.player.add(Player(player_pos, player_size))
 
 	def add_additionals(self):
 		# add nav
@@ -29,21 +29,23 @@ class World:
 		keys = pygame.key.get_pressed()
 
 		if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-			if self.player.rect.left >= 0:
-				self.player.move_left()
+			if self.player.sprite.rect.left >= 0:
+				self.player.sprite.move_left()
 		if keys[pygame.K_w] or keys[pygame.K_UP]:
-			if self.player.rect.top >= 0:
-				self.player.move_up()
+			if self.player.sprite.rect.top >= 0:
+				self.player.sprite.move_up()
 		if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-			if self.player.rect.right <= WIDTH:
-				self.player.move_right()
+			if self.player.sprite.rect.right <= WIDTH:
+				self.player.sprite.move_right()
 		if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-			if self.player.rect.bottom <= HEIGHT:
-				self.player.move_bottom()
+			if self.player.sprite.rect.bottom <= HEIGHT:
+				self.player.sprite.move_bottom()
 
 	def update(self):
 		# add nav
 		self.add_additionals()
 		
-		self.player.update(self.screen)
-		self.game.show_life(self.player)
+		self.player.update()
+		self.player.draw(self.screen)
+
+		self.game.show_life(self.player.sprite.life)

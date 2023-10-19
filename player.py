@@ -5,9 +5,14 @@ class Player(pygame.sprite.Sprite):
 		super().__init__()
 		self.x = pos[0]
 		self.y = pos[1]
-		self.rect = pygame.Rect(self.x, self.y, size, size)
-		self.color = pygame.Color("red")
-		self.player_speed = 8
+
+		# player 
+		img_path = 'assets/ship/ship.png'
+		self.image = pygame.image.load(img_path)
+		self.image = pygame.transform.scale(self.image, (size, size))
+		self.rect = self.image.get_rect(topleft = pos)
+		self.mask = pygame.mask.from_surface(self.image)
+		self.player_speed = 4
 
 		# player status
 		self.life = 5
@@ -24,5 +29,5 @@ class Player(pygame.sprite.Sprite):
 	def move_bottom(self):
 		self.rect.y += self.player_speed
 
-	def update(self, screen):
-		pygame.draw.rect(screen, self.color, self.rect)
+	def update(self):
+		self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
