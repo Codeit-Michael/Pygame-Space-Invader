@@ -23,14 +23,15 @@ class World:
 		player_pos = (player_x - center_size, player_y - center_size)
 		self.player.add(Ship(player_pos, player_size))
 
-		# create enemy's/alien's ship
-			# enemy random spawning should be regulated as long as player not died yet (spawn delay: 3 secs)
-			# could also work for one-time spawn
-			# could also be if one pattern spawn, and only repeat spawn once first set is done
-		enemy_x, enemy_y = WIDTH // 2, HEIGHT // 4 
-		center = enemy_size // 2
-		enemy_pos = (enemy_x - center, enemy_y - center)
-		self.alien.add(Alien(enemy_pos, enemy_size))
+		# generate opponents
+		enemy_cols = (WIDTH // enemy_size) // 2
+		enemy_rows = 3
+		for y in range(enemy_rows):
+			for x in range(enemy_cols):
+				my_x = enemy_size * x
+				my_y = enemy_size * y
+				specific_pos = (my_x, my_y)
+				self.alien.add(Alien(specific_pos, enemy_size, y))
 
 	def add_additionals(self):
 		# add nav
@@ -41,16 +42,16 @@ class World:
 		keys = pygame.key.get_pressed()
 
 		if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-			if self.player.sprite.rect.left >= 0:
+			if self.player.sprite.rect.left > 0:
 				self.player.sprite.move_left()
 		if keys[pygame.K_w] or keys[pygame.K_UP]:
-			if self.player.sprite.rect.top >= 0:
+			if self.player.sprite.rect.top > 0:
 				self.player.sprite.move_up()
 		if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-			if self.player.sprite.rect.right <= WIDTH:
+			if self.player.sprite.rect.right < WIDTH:
 				self.player.sprite.move_right()
 		if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-			if self.player.sprite.rect.bottom <= HEIGHT:
+			if self.player.sprite.rect.bottom < HEIGHT:
 				self.player.sprite.move_bottom()
 
 	def update(self):

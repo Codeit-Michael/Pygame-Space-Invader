@@ -12,10 +12,10 @@ class Ship(pygame.sprite.Sprite):
 		self.image = pygame.transform.scale(self.image, (size, size))
 		self.rect = self.image.get_rect(topleft = pos)
 		self.mask = pygame.mask.from_surface(self.image)
-		self.ship_speed = 4
+		self.ship_speed = 7
 
 		# ship status
-		self.life = 5
+		self.life = 3
 
 	def move_left(self):
 		self.rect.x -= self.ship_speed
