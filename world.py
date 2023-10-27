@@ -1,7 +1,7 @@
 import pygame
 from ship import Ship
 from alien import Alien
-from settings import HEIGHT, WIDTH, player_size, enemy_size, border_thickness, nav_thickness
+from settings import HEIGHT, WIDTH, PLAYER_SIZE, ENEMY_SIZE, NAV_THICKNESS
 from game import Game
 
 class World:
@@ -18,24 +18,24 @@ class World:
 	# create and add player to the screen
 	def _generate_world(self):
 		# create the player's ship
-		player_x, player_y = WIDTH // 2, HEIGHT - (player_size * 2) 
-		center_size = player_size // 2
+		player_x, player_y = WIDTH // 2, HEIGHT - (PLAYER_SIZE * 2) 
+		center_size = PLAYER_SIZE // 2
 		player_pos = (player_x - center_size, player_y - center_size)
-		self.player.add(Ship(player_pos, player_size))
+		self.player.add(Ship(player_pos, PLAYER_SIZE))
 
 		# generate opponents
-		enemy_cols = (WIDTH // enemy_size) // 2
+		enemy_cols = (WIDTH // ENEMY_SIZE) // 2
 		enemy_rows = 3
 		for y in range(enemy_rows):
 			for x in range(enemy_cols):
-				my_x = enemy_size * x
-				my_y = enemy_size * y
+				my_x = ENEMY_SIZE * x
+				my_y = ENEMY_SIZE * y
 				specific_pos = (my_x, my_y)
-				self.alien.add(Alien(specific_pos, enemy_size, y))
+				self.alien.add(Alien(specific_pos, ENEMY_SIZE, y))
 
 	def add_additionals(self):
 		# add nav
-		nav = pygame.Rect(0, HEIGHT, WIDTH, nav_thickness)
+		nav = pygame.Rect(0, HEIGHT, WIDTH, NAV_THICKNESS)
 		pygame.draw.rect(self.screen, pygame.Color("gray"), nav)
 
 	def player_move(self):
