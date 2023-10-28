@@ -1,7 +1,8 @@
 import pygame
 from ship import Ship
 from alien import Alien
-from settings import HEIGHT, WIDTH, PLAYER_SIZE, ENEMY_SIZE, NAV_THICKNESS
+from settings import HEIGHT, WIDTH, PLAYER_SIZE, ENEMY_SIZE, BULLET_SIZE, NAV_THICKNESS
+from bullet import Bullet
 from game import Game
 
 class World:
@@ -11,6 +12,7 @@ class World:
 
 		self.player = pygame.sprite.GroupSingle()
 		self.alien = pygame.sprite.Group()
+		self.bullets = pygame.sprite.Group()
 		self.game = Game(self.screen)
 
 		self._generate_world()
@@ -53,11 +55,17 @@ class World:
 		if keys[pygame.K_s] or keys[pygame.K_DOWN]:
 			if self.player.sprite.rect.bottom < HEIGHT:
 				self.player.sprite.move_bottom()
+		if keys[pygame.K_SPACE]:
+			specific_pos = (self.player.sprite.rect.centerx, self.player.sprite.rect.y)
+			self.bullets.add(Bullet(specific_pos, BULLET_SIZE, "player"))
 
 	def update(self):
 		# add nav
 		self.add_additionals()
 		
+		self.bullets.update()
+		self.bullets.draw(self.screen)
+
 		self.player.update()
 		self.player.draw(self.screen)
 
