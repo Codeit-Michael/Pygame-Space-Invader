@@ -11,8 +11,9 @@ class World:
 		self.game_over = False
 
 		self.player = pygame.sprite.GroupSingle()
-		self.alien = pygame.sprite.Group()
-		self.bullets = pygame.sprite.Group()
+		self.aliens = pygame.sprite.Group()
+		self.player_bullets = pygame.sprite.Group()
+		self.enemy_bullets = pygame.sprite.Group()
 		self.game = Game(self.screen)
 
 		self._generate_world()
@@ -33,7 +34,7 @@ class World:
 				my_x = ENEMY_SIZE * x
 				my_y = ENEMY_SIZE * y
 				specific_pos = (my_x, my_y)
-				self.alien.add(Alien(specific_pos, ENEMY_SIZE, y))
+				self.aliens.add(Alien(specific_pos, ENEMY_SIZE, y))
 
 	def add_additionals(self):
 		# add nav bar
@@ -49,28 +50,44 @@ class World:
 		if keys[pygame.K_a] or keys[pygame.K_LEFT]:
 			if self.player.sprite.rect.left > 0:
 				self.player.sprite.move_left()
-		# if keys[pygame.K_w] or keys[pygame.K_UP]:
-		# 	if self.player.sprite.rect.top > 0:
-		# 		self.player.sprite.move_up()
 		if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
 			if self.player.sprite.rect.right < WIDTH:
 				self.player.sprite.move_right()
+		# might use these up and down buttons for future versions
+		# if keys[pygame.K_w] or keys[pygame.K_UP]:
+		# 	if self.player.sprite.rect.top > 0:
+		# 		self.player.sprite.move_up()		
 		# if keys[pygame.K_s] or keys[pygame.K_DOWN]:
 		# 	if self.player.sprite.rect.bottom < HEIGHT:
 		# 		self.player.sprite.move_bottom()
+
 		if keys[pygame.K_SPACE]:
 			specific_pos = (self.player.sprite.rect.centerx - (BULLET_SIZE // 2), self.player.sprite.rect.y)
-			self.bullets.add(Bullet(specific_pos, BULLET_SIZE, "player"))
+			self.player_bullets.add(Bullet(specific_pos, BULLET_SIZE, "player"))
+
+	def _detect_collisions(self):
+		player_attack_collision = pygame.sprite.groupcollide(self.aliens, self.player_bullets, True, True)
+		enemy_attack_collision = pygame.sprite.groupcollide(self.player, self.enemy_bullets, True, True)
+
+		if player_attack_collision:
+			print(True) # make this condition add score
+		if player_attack_collision:
+			print(False) # make this decrease life by 1
 
 	def update(self):
-		self.bullets.update()
-		self.bullets.draw(self.screen)
+		# detecting if bullet, alien, and player group is colliding
+		self._detect_collisions()
 
+		# bullets rendering
+		self.player_bullets.update()
+		self.player_bullets.draw(self.screen)
+
+		# player ship rendering
 		self.player.update()
 		self.player.draw(self.screen)
 
 		# alien rendering
-		self.alien.draw(self.screen)
+		self.aliens.draw(self.screen)
 
 		# add nav
 		self.add_additionals()
