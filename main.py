@@ -21,6 +21,9 @@ class Main:
 				if event.type == pygame.QUIT:
 					pygame.quit()
 					sys.exit()
+				if event.type == pygame.KEYDOWN:
+					if event.key == pygame.K_SPACE:
+						world.player_move(attack = True)
 
 			world.player_move()
 			world.update()

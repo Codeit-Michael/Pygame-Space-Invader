@@ -44,7 +44,7 @@ class World:
 		# show player's life
 		self.game.show_life(self.player.sprite.life)
 
-	def player_move(self):
+	def player_move(self, attack = False):
 		keys = pygame.key.get_pressed()
 
 		if keys[pygame.K_a] or keys[pygame.K_LEFT]:
@@ -61,7 +61,7 @@ class World:
 		# 	if self.player.sprite.rect.bottom < HEIGHT:
 		# 		self.player.sprite.move_bottom()
 
-		if keys[pygame.K_SPACE]:
+		if attack:
 			specific_pos = (self.player.sprite.rect.centerx - (BULLET_SIZE // 2), self.player.sprite.rect.y)
 			self.player_bullets.add(Bullet(specific_pos, BULLET_SIZE, "player"))
 
@@ -71,7 +71,7 @@ class World:
 
 		if player_attack_collision:
 			print(True) # make this condition add score
-		if player_attack_collision:
+		if enemy_attack_collision:
 			print(False) # make this decrease life by 1
 
 	def update(self):
