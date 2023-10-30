@@ -22,3 +22,7 @@ class Bullet(pygame.sprite.Sprite):
 	def update(self):
 		self._move_bullet()
 		self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
+
+		# delete the bullet if it get trough out of the screen
+		if self.rect.bottom <= 0:
+			self.kill()
