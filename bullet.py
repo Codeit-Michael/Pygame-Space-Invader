@@ -20,8 +20,10 @@ class Bullet(pygame.sprite.Sprite):
 		elif side == "player":
 			self.move_speed = (- BULLET_SPEED)
 
+
 	def _move_bullet(self):
 		self.rect.y += self.move_speed
+
 
 	def update(self):
 		self._move_bullet()

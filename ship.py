@@ -1,3 +1,4 @@
+from settings import PLAYER_SPEED
 import pygame
 
 class Ship(pygame.sprite.Sprite):
@@ -12,7 +13,7 @@ class Ship(pygame.sprite.Sprite):
 		self.image = pygame.transform.scale(self.image, (size, size))
 		self.rect = self.image.get_rect(topleft = pos)
 		self.mask = pygame.mask.from_surface(self.image)
-		self.ship_speed = 7
+		self.ship_speed = PLAYER_SPEED
 
 		# ship status
 		self.life = 3

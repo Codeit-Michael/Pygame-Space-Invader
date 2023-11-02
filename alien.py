@@ -13,9 +13,11 @@ class Alien(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect(topleft = pos)
 		self.mask = pygame.mask.from_surface(self.image)
 		self.move_speed = 5
+		self.to_direction = "right"
 
 		# alien status
 		self.life = 1
+
 
 	def move_left(self):
 		self.rect.x -= self.move_speed

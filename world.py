@@ -18,6 +18,7 @@ class World:
 
 		self._generate_world()
 
+		
 	# create and add player to the screen
 	def _generate_world(self):
 		# create the player's ship
@@ -36,6 +37,7 @@ class World:
 				specific_pos = (my_x, my_y)
 				self.aliens.add(Alien(specific_pos, ENEMY_SIZE, y))
 
+
 	def add_additionals(self):
 		# add nav bar
 		nav = pygame.Rect(0, HEIGHT, WIDTH, NAV_THICKNESS)
@@ -43,6 +45,7 @@ class World:
 
 		# show player's life
 		self.game.show_life(self.player.sprite.life)
+
 
 	def player_move(self, attack = False):
 		keys = pygame.key.get_pressed()
@@ -65,6 +68,7 @@ class World:
 			specific_pos = (self.player.sprite.rect.centerx - (BULLET_SIZE // 2), self.player.sprite.rect.y)
 			self.player_bullets.add(Bullet(specific_pos, BULLET_SIZE, "player"))
 
+
 	def _detect_collisions(self):
 		player_attack_collision = pygame.sprite.groupcollide(self.aliens, self.player_bullets, True, True)
 		enemy_attack_collision = pygame.sprite.groupcollide(self.player, self.enemy_bullets, True, True)
@@ -74,9 +78,40 @@ class World:
 		if enemy_attack_collision:
 			print(False) # make this decrease life by 1
 
+
+	def _alien_movement(self):
+		move_sideward = False
+		move_forward = False
+
+		for alien in self.aliens.sprites():
+			if alien.to_direction == "right" and alien.rect.right < WIDTH or alien.to_direction == "left" and alien.rect.left > 0:
+				move_sideward = True
+				move_forward = False
+			else:
+				move_sideward = False
+				move_forward = True
+				alien.to_direction = "left" if alien.to_direction == "right" else "right"
+				break
+
+		for alien in self.aliens.sprites():
+			if move_sideward and not move_forward:
+				if alien.to_direction == "right":
+					alien.move_right()
+				if alien.to_direction == "left":
+					alien.move_left()
+			if not move_sideward and move_forward:
+					alien.move_bottom()
+
+
 	def update(self):
 		# detecting if bullet, alien, and player group is colliding
 		self._detect_collisions()
+
+		# allows the aliens to move
+		self._alien_movement()
+
+		# allows alien to shoot the player
+		# self._alien_shoot()
 
 		# bullets rendering
 		self.player_bullets.update()
