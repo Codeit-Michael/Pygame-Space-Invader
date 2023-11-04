@@ -81,6 +81,9 @@ class World:
 				break
 
 		# checks if the aliens hit the player
+		alien_to_player_collision = pygame.sprite.groupcollide(self.aliens, self.player, True, False)
+		if alien_to_player_collision:
+			self.player.sprite.life -= 1
 
 
 	def _alien_movement(self):
