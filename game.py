@@ -12,6 +12,7 @@ class Game:
 		life_image = pygame.transform.scale(life_image, (life_size, life_size))
 		life_x = LIFE_SIZE // 2
 
-		for life in range(life):
-			self.screen.blit(life_image, (life_x, HEIGHT + (LIFE_SIZE // 2)))
-			life_x += life_size
+		if life != 0:
+			for life in range(life):
+				self.screen.blit(life_image, (life_x, HEIGHT + (LIFE_SIZE // 2)))
+				life_x += life_size

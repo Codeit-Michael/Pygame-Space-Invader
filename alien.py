@@ -1,5 +1,8 @@
 import pygame
 
+from settings import BULLET_SIZE
+from bullet import Bullet
+
 class Alien(pygame.sprite.Sprite):
 	def __init__(self, pos, size, row_num):
 		super().__init__()
@@ -17,6 +20,7 @@ class Alien(pygame.sprite.Sprite):
 
 		# alien status
 		self.life = 1
+		self.bullets = pygame.sprite.GroupSingle()
 
 
 	def move_left(self):
@@ -29,7 +33,8 @@ class Alien(pygame.sprite.Sprite):
 		self.rect.y += self.move_speed
 
 	def _shoot(self):
-		pass
+		specific_pos = (self.rect.centerx - (BULLET_SIZE // 2), self.rect.centery)
+		self.bullets.add(Bullet(specific_pos, BULLET_SIZE, "enemy"))
 		# import bullet class
 		# if called, generate bullets
 		# add created bullet to the sprite.groupsingle

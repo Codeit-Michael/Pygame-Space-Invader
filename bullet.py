@@ -14,7 +14,7 @@ class Bullet(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect(topleft = pos)
 		self.mask = pygame.mask.from_surface(self.image)
 
-		# different bullet movement direction for both player and enemy
+		# different bullet movement direction for both player and enemy (alien)
 		if side == "enemy":
 			self.move_speed = BULLET_SPEED
 		elif side == "player":

@@ -12,7 +12,6 @@ class World:
 
 		self.player = pygame.sprite.GroupSingle()
 		self.aliens = pygame.sprite.Group()
-		self.enemy_bullets = pygame.sprite.Group()
 		self.game = Game(self.screen)
 
 		self._generate_world()
@@ -27,10 +26,10 @@ class World:
 		self.player.add(Ship(player_pos, CHARACTER_SIZE))
 
 		# generate opponents
-		enemy_cols = (WIDTH // CHARACTER_SIZE) // 2
-		enemy_rows = 3
-		for y in range(enemy_rows):
-			for x in range(enemy_cols):
+		alien_cols = (WIDTH // CHARACTER_SIZE) // 2
+		alien_rows = 3
+		for y in range(alien_rows):
+			for x in range(alien_cols):
 				my_x = CHARACTER_SIZE * x
 				my_y = CHARACTER_SIZE * y
 				specific_pos = (my_x, my_y)
@@ -68,15 +67,20 @@ class World:
 
 
 	def _detect_collisions(self):
+		# checks if player bullet hits the enemies (aliens)
 		player_attack_collision = pygame.sprite.groupcollide(self.aliens, self.player.sprite.player_bullets, True, True)
-		enemy_attack_collision = pygame.sprite.groupcollide(self.player, self.enemy_bullets, False, True)
-
 		if player_attack_collision:
 			pass
-			# print(True) # make this condition add score
-		if enemy_attack_collision:
-			pass
-			# print(False) # make this decrease life by 1
+			# print(True) # make this condition add score	
+
+		# checks if the aliens' bullet hit the player
+		for alien in self.aliens.sprites():	
+			alien_attack_collision = pygame.sprite.groupcollide(alien.bullets, self.player, True, False)
+			if alien_attack_collision:
+				self.player.sprite.life -= 1
+				break
+
+		# checks if the aliens hit the player
 
 
 	def _alien_movement(self):
@@ -106,8 +110,7 @@ class World:
 	def _alien_shoot(self):
 		for alien in self.aliens.sprites():
 			if (WIDTH - alien.rect.x) // CHARACTER_SIZE == (WIDTH - self.player.sprite.rect.x) // CHARACTER_SIZE:
-				specific_pos = (alien.rect.centerx - (BULLET_SIZE // 2), alien.rect.centery)
-				self.enemy_bullets.add(Bullet(specific_pos, BULLET_SIZE, "enemy"))
+				alien._shoot()
 				break
 
 	def update(self):
@@ -124,8 +127,11 @@ class World:
 		self.player.sprite.player_bullets.update()
 		self.player.sprite.player_bullets.draw(self.screen)
 
-		self.enemy_bullets.update()
-		self.enemy_bullets.draw(self.screen)
+		[alien.bullets.update() for alien in self.aliens.sprites()]
+		[alien.bullets.draw(self.screen) for alien in self.aliens.sprites()]
+
+		# print(self.player.sprite.life)
+
 
 		# player ship rendering
 		self.player.update()
