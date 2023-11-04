@@ -1,7 +1,7 @@
 import pygame
 from ship import Ship
 from alien import Alien
-from settings import HEIGHT, WIDTH, PLAYER_SIZE, ENEMY_SIZE, BULLET_SIZE, NAV_THICKNESS
+from settings import HEIGHT, WIDTH, CHARACTER_SIZE, BULLET_SIZE, NAV_THICKNESS
 from bullet import Bullet
 from game import Game
 
@@ -12,7 +12,6 @@ class World:
 
 		self.player = pygame.sprite.GroupSingle()
 		self.aliens = pygame.sprite.Group()
-		self.player_bullets = pygame.sprite.Group()
 		self.enemy_bullets = pygame.sprite.Group()
 		self.game = Game(self.screen)
 
@@ -22,20 +21,20 @@ class World:
 	# create and add player to the screen
 	def _generate_world(self):
 		# create the player's ship
-		player_x, player_y = WIDTH // 2, HEIGHT - PLAYER_SIZE
-		center_size = PLAYER_SIZE // 2
+		player_x, player_y = WIDTH // 2, HEIGHT - CHARACTER_SIZE
+		center_size = CHARACTER_SIZE // 2
 		player_pos = (player_x - center_size, player_y)
-		self.player.add(Ship(player_pos, PLAYER_SIZE))
+		self.player.add(Ship(player_pos, CHARACTER_SIZE))
 
 		# generate opponents
-		enemy_cols = (WIDTH // ENEMY_SIZE) // 2
+		enemy_cols = (WIDTH // CHARACTER_SIZE) // 2
 		enemy_rows = 3
 		for y in range(enemy_rows):
 			for x in range(enemy_cols):
-				my_x = ENEMY_SIZE * x
-				my_y = ENEMY_SIZE * y
+				my_x = CHARACTER_SIZE * x
+				my_y = CHARACTER_SIZE * y
 				specific_pos = (my_x, my_y)
-				self.aliens.add(Alien(specific_pos, ENEMY_SIZE, y))
+				self.aliens.add(Alien(specific_pos, CHARACTER_SIZE, y))
 
 
 	def add_additionals(self):
@@ -65,18 +64,19 @@ class World:
 		# 		self.player.sprite.move_bottom()
 
 		if attack:
-			specific_pos = (self.player.sprite.rect.centerx - (BULLET_SIZE // 2), self.player.sprite.rect.y)
-			self.player_bullets.add(Bullet(specific_pos, BULLET_SIZE, "player"))
+			self.player.sprite._shoot()
 
 
 	def _detect_collisions(self):
-		player_attack_collision = pygame.sprite.groupcollide(self.aliens, self.player_bullets, True, True)
-		enemy_attack_collision = pygame.sprite.groupcollide(self.player, self.enemy_bullets, True, True)
+		player_attack_collision = pygame.sprite.groupcollide(self.aliens, self.player.sprite.player_bullets, True, True)
+		enemy_attack_collision = pygame.sprite.groupcollide(self.player, self.enemy_bullets, False, True)
 
 		if player_attack_collision:
-			print(True) # make this condition add score
+			pass
+			# print(True) # make this condition add score
 		if enemy_attack_collision:
-			print(False) # make this decrease life by 1
+			pass
+			# print(False) # make this decrease life by 1
 
 
 	def _alien_movement(self):
@@ -102,6 +102,13 @@ class World:
 			if not move_sideward and move_forward:
 					alien.move_bottom()
 
+###
+	def _alien_shoot(self):
+		for alien in self.aliens.sprites():
+			if (WIDTH - alien.rect.x) // CHARACTER_SIZE == (WIDTH - self.player.sprite.rect.x) // CHARACTER_SIZE:
+				specific_pos = (alien.rect.centerx - (BULLET_SIZE // 2), alien.rect.centery)
+				self.enemy_bullets.add(Bullet(specific_pos, BULLET_SIZE, "enemy"))
+				break
 
 	def update(self):
 		# detecting if bullet, alien, and player group is colliding
@@ -110,12 +117,15 @@ class World:
 		# allows the aliens to move
 		self._alien_movement()
 
-		# allows alien to shoot the player
-		# self._alien_shoot()
+##		# allows alien to shoot the player
+		self._alien_shoot()
 
 		# bullets rendering
-		self.player_bullets.update()
-		self.player_bullets.draw(self.screen)
+		self.player.sprite.player_bullets.update()
+		self.player.sprite.player_bullets.draw(self.screen)
+
+		self.enemy_bullets.update()
+		self.enemy_bullets.draw(self.screen)
 
 		# player ship rendering
 		self.player.update()

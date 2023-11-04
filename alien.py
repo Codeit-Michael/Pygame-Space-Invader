@@ -28,5 +28,12 @@ class Alien(pygame.sprite.Sprite):
 	def move_bottom(self):
 		self.rect.y += self.move_speed
 
+	def _shoot(self):
+		pass
+		# import bullet class
+		# if called, generate bullets
+		# add created bullet to the sprite.groupsingle
+		# if called and groupsingle still not empty, do not make request
+
 	def update(self):
 		self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))

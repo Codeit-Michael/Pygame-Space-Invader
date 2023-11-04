@@ -1,5 +1,7 @@
-from settings import PLAYER_SPEED
 import pygame
+
+from settings import PLAYER_SPEED, BULLET_SIZE
+from bullet import Bullet
 
 class Ship(pygame.sprite.Sprite):
 	def __init__(self, pos, size):
@@ -17,6 +19,8 @@ class Ship(pygame.sprite.Sprite):
 
 		# ship status
 		self.life = 3
+		self.player_bullets = pygame.sprite.Group()
+
 
 	def move_left(self):
 		self.rect.x -= self.ship_speed
@@ -30,5 +34,16 @@ class Ship(pygame.sprite.Sprite):
 	def move_bottom(self):
 		self.rect.y += self.ship_speed
 
+	def _shoot(self):
+		specific_pos = (self.rect.centerx - (BULLET_SIZE // 2), self.rect.y)
+		self.player_bullets.add(Bullet(specific_pos, BULLET_SIZE, "player"))
+		pass
+		# import Bullet class
+		# generate bullet if called
+		# add bullet to srpite.group
+
 	def update(self):
 		self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
+
+		# self.player_bullets.update()
+		# self.player_bullets.draw(self.screen)
