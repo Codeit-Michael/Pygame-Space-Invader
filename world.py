@@ -13,9 +13,9 @@ class World:
 		self.aliens = pygame.sprite.Group()
 		self.display = Display(self.screen)
 
+		self.game_over = False
 		self.player_score = 0
 		self.game_level = 1
-		self.game_over = False
 
 		self._generate_world()
 
@@ -69,6 +69,15 @@ class World:
 		# if keys[pygame.K_s] and not self.game_over or keys[pygame.K_DOWN] and not self.game_over:
 		# 	if self.player.sprite.rect.bottom < HEIGHT:
 		# 		self.player.sprite.move_bottom()
+
+		# game restart button
+		if keys[pygame.K_r]:
+			self.game_over = False
+			self.player_score = 0
+			self.game_level = 1
+			for alien in self.aliens.sprites():
+				alien.kill()
+			self._generate_world()
 
 		if attack and not self.game_over:
 			self.player.sprite._shoot()
