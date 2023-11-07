@@ -8,7 +8,6 @@ from display import Display
 class World:
 	def __init__(self, screen):
 		self.screen = screen
-		self.game_over = False
 
 		self.player = pygame.sprite.GroupSingle()
 		self.aliens = pygame.sprite.Group()
@@ -57,21 +56,21 @@ class World:
 	def player_move(self, attack = False):
 		keys = pygame.key.get_pressed()
 
-		if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+		if keys[pygame.K_a] and not self.game_over or keys[pygame.K_LEFT] and not self.game_over:
 			if self.player.sprite.rect.left > 0:
 				self.player.sprite.move_left()
-		if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+		if keys[pygame.K_d] and not self.game_over or keys[pygame.K_RIGHT] and not self.game_over:
 			if self.player.sprite.rect.right < WIDTH:
 				self.player.sprite.move_right()
 		# might use these up and down buttons for future versions
-		# if keys[pygame.K_w] or keys[pygame.K_UP]:
+		# if keys[pygame.K_w] and not self.game_over or keys[pygame.K_UP] and not self.game_over:
 		# 	if self.player.sprite.rect.top > 0:
 		# 		self.player.sprite.move_up()		
-		# if keys[pygame.K_s] or keys[pygame.K_DOWN]:
+		# if keys[pygame.K_s] and not self.game_over or keys[pygame.K_DOWN] and not self.game_over:
 		# 	if self.player.sprite.rect.bottom < HEIGHT:
 		# 		self.player.sprite.move_bottom()
 
-		if attack:
+		if attack and not self.game_over:
 			self.player.sprite._shoot()
 
 
@@ -127,20 +126,19 @@ class World:
 
 
 	def _check_game_state(self):
+		# check if game over
+		if self.player.sprite.life <= 0:
+			self.game_over = True
+			self.display.game_over_message()
 		# check if next level
-		if len(self.aliens) == 0:
+		if len(self.aliens) == 0 and self.player.sprite.life > 0:
 			self.game_level += 1
 			self._generate_aliens()
 			for alien in self.aliens.sprites():
 				alien.move_speed += self.game_level - 1
-				print(alien.move_speed)
-		# check if game over
 
 
 	def update(self):
-		# checks game state
-		self._check_game_state()
-
 		# detecting if bullet, alien, and player group is colliding
 		self._detect_collisions()
 
@@ -157,9 +155,6 @@ class World:
 		[alien.bullets.update() for alien in self.aliens.sprites()]
 		[alien.bullets.draw(self.screen) for alien in self.aliens.sprites()]
 
-		# print(self.player.sprite.life)
-
-
 		# player ship rendering
 		self.player.update()
 		self.player.draw(self.screen)
@@ -169,3 +164,6 @@ class World:
 
 		# add nav
 		self.add_additionals()
+
+		# checks game state
+		self._check_game_state()

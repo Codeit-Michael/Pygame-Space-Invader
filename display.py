@@ -1,5 +1,5 @@
 import pygame
-from settings import WIDTH, HEIGHT, SPACE, FONT_SIZE
+from settings import WIDTH, HEIGHT, SPACE, FONT_SIZE, EVENT_FONT_SIZE
 
 pygame.font.init()
 
@@ -8,7 +8,9 @@ class Display:
 		self.screen = screen
 		self.score_font = pygame.font.SysFont("monospace", FONT_SIZE)
 		self.level_font = pygame.font.SysFont("impact", FONT_SIZE)
+		self.event_font = pygame.font.SysFont("impact", EVENT_FONT_SIZE)
 		self.text_color = pygame.Color("blue")
+		self.event_color = pygame.Color("red")
 
 
 	def show_life(self, life):
@@ -34,3 +36,8 @@ class Display:
 		level_x = WIDTH // 3
 		level = self.level_font.render(f'Level {level}', True, self.text_color)
 		self.screen.blit(level, (level_x * 2, (HEIGHT + (SPACE // 2))))
+
+
+	def game_over_message(self):
+		message = self.event_font.render('GAME OVER!!', True, self.event_color)
+		self.screen.blit(message, ((WIDTH // 3) - (EVENT_FONT_SIZE // 2), (HEIGHT // 2) - (EVENT_FONT_SIZE // 2)))
