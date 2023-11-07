@@ -3,7 +3,7 @@ from ship import Ship
 from alien import Alien
 from settings import HEIGHT, WIDTH, CHARACTER_SIZE, BULLET_SIZE, NAV_THICKNESS
 from bullet import Bullet
-from game import Game
+from display import Display
 
 class World:
 	def __init__(self, screen):
@@ -12,7 +12,8 @@ class World:
 
 		self.player = pygame.sprite.GroupSingle()
 		self.aliens = pygame.sprite.Group()
-		self.game = Game(self.screen)
+		self.display = Display(self.screen)
+		self.player_score = 0
 
 		self._generate_world()
 
@@ -42,7 +43,10 @@ class World:
 		pygame.draw.rect(self.screen, pygame.Color("gray"), nav)
 
 		# show player's life
-		self.game.show_life(self.player.sprite.life)
+		self.display.show_life(self.player.sprite.life)
+
+		# show character's score
+		self.display.show_score(self.player_score)
 
 
 	def player_move(self, attack = False):
@@ -70,8 +74,8 @@ class World:
 		# checks if player bullet hits the enemies (aliens)
 		player_attack_collision = pygame.sprite.groupcollide(self.aliens, self.player.sprite.player_bullets, True, True)
 		if player_attack_collision:
-			pass
-			# print(True) # make this condition add score	
+			self.player_score += 10
+			# make this condition add score	
 
 		# checks if the aliens' bullet hit the player
 		for alien in self.aliens.sprites():	
@@ -109,12 +113,13 @@ class World:
 			if not move_sideward and move_forward:
 					alien.move_bottom()
 
-###
+
 	def _alien_shoot(self):
 		for alien in self.aliens.sprites():
 			if (WIDTH - alien.rect.x) // CHARACTER_SIZE == (WIDTH - self.player.sprite.rect.x) // CHARACTER_SIZE:
 				alien._shoot()
 				break
+
 
 	def update(self):
 		# detecting if bullet, alien, and player group is colliding
@@ -123,7 +128,7 @@ class World:
 		# allows the aliens to move
 		self._alien_movement()
 
-##		# allows alien to shoot the player
+		# allows alien to shoot the player
 		self._alien_shoot()
 
 		# bullets rendering
