@@ -1,7 +1,7 @@
 import pygame
 from ship import Ship
 from alien import Alien
-from settings import HEIGHT, WIDTH, CHARACTER_SIZE, BULLET_SIZE, NAV_THICKNESS
+from settings import HEIGHT, WIDTH, ENEMY_SPEED, CHARACTER_SIZE, BULLET_SIZE, NAV_THICKNESS
 from bullet import Bullet
 from display import Display
 
@@ -13,19 +13,15 @@ class World:
 		self.player = pygame.sprite.GroupSingle()
 		self.aliens = pygame.sprite.Group()
 		self.display = Display(self.screen)
+
 		self.player_score = 0
+		self.game_level = 1
+		self.game_over = False
 
 		self._generate_world()
 
-		
-	# create and add player to the screen
-	def _generate_world(self):
-		# create the player's ship
-		player_x, player_y = WIDTH // 2, HEIGHT - CHARACTER_SIZE
-		center_size = CHARACTER_SIZE // 2
-		player_pos = (player_x - center_size, player_y)
-		self.player.add(Ship(player_pos, CHARACTER_SIZE))
 
+	def _generate_aliens(self):
 		# generate opponents
 		alien_cols = (WIDTH // CHARACTER_SIZE) // 2
 		alien_rows = 3
@@ -35,6 +31,16 @@ class World:
 				my_y = CHARACTER_SIZE * y
 				specific_pos = (my_x, my_y)
 				self.aliens.add(Alien(specific_pos, CHARACTER_SIZE, y))
+		
+	# create and add player to the screen
+	def _generate_world(self):
+		# create the player's ship
+		player_x, player_y = WIDTH // 2, HEIGHT - CHARACTER_SIZE
+		center_size = CHARACTER_SIZE // 2
+		player_pos = (player_x - center_size, player_y)
+		self.player.add(Ship(player_pos, CHARACTER_SIZE))
+
+		self._generate_aliens()
 
 
 	def add_additionals(self):
@@ -42,11 +48,10 @@ class World:
 		nav = pygame.Rect(0, HEIGHT, WIDTH, NAV_THICKNESS)
 		pygame.draw.rect(self.screen, pygame.Color("gray"), nav)
 
-		# show player's life
+		# render player's life, score and game level
 		self.display.show_life(self.player.sprite.life)
-
-		# show character's score
 		self.display.show_score(self.player_score)
+		self.display.show_level(self.game_level)
 
 
 	def player_move(self, attack = False):
@@ -121,7 +126,21 @@ class World:
 				break
 
 
+	def _check_game_state(self):
+		# check if next level
+		if len(self.aliens) == 0:
+			self.game_level += 1
+			self._generate_aliens()
+			for alien in self.aliens.sprites():
+				alien.move_speed += self.game_level - 1
+				print(alien.move_speed)
+		# check if game over
+
+
 	def update(self):
+		# checks game state
+		self._check_game_state()
+
 		# detecting if bullet, alien, and player group is colliding
 		self._detect_collisions()
 

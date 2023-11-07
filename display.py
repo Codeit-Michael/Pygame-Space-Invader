@@ -6,12 +6,10 @@ pygame.font.init()
 class Display:
 	def __init__(self, screen):
 		self.screen = screen
-		self.font = pygame.font.SysFont("monospace", FONT_SIZE)
-		self.message_color = pygame.Color("blue")
+		self.score_font = pygame.font.SysFont("monospace", FONT_SIZE)
+		self.level_font = pygame.font.SysFont("impact", FONT_SIZE)
+		self.text_color = pygame.Color("blue")
 
-
-	def nav_board(self):
-		pass
 
 	def show_life(self, life):
 		life_size = 30
@@ -25,10 +23,14 @@ class Display:
 				self.screen.blit(life_image, (life_x, HEIGHT + (SPACE // 2)))
 				life_x += life_size
 
+
 	def show_score(self, score):
 		score_x = WIDTH // 3
-		score = self.font.render(f'score: {score}', True, self.message_color)
+		score = self.score_font.render(f'score: {score}', True, self.text_color)
 		self.screen.blit(score, (score_x, (HEIGHT + (SPACE // 2))))
 
-	def _show_level(self):
-		pass
+
+	def show_level(self, level):
+		level_x = WIDTH // 3
+		level = self.level_font.render(f'Level {level}', True, self.text_color)
+		self.screen.blit(level, (level_x * 2, (HEIGHT + (SPACE // 2))))
