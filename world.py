@@ -87,7 +87,6 @@ class World:
 		player_attack_collision = pygame.sprite.groupcollide(self.aliens, self.player.sprite.player_bullets, True, True)
 		if player_attack_collision:
 			self.player_score += 10
-			# make this condition add score	
 
 		# checks if the aliens' bullet hit the player
 		for alien in self.aliens.sprites():	
