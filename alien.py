@@ -19,7 +19,6 @@ class Alien(pygame.sprite.Sprite):
 		self.to_direction = "right"
 
 		# alien status
-		self.life = 1
 		self.bullets = pygame.sprite.GroupSingle()
 
 
@@ -35,10 +34,6 @@ class Alien(pygame.sprite.Sprite):
 	def _shoot(self):
 		specific_pos = (self.rect.centerx - (BULLET_SIZE // 2), self.rect.centery)
 		self.bullets.add(Bullet(specific_pos, BULLET_SIZE, "enemy"))
-		# import bullet class
-		# if called, generate bullets
-		# add created bullet to the sprite.groupsingle
-		# if called and groupsingle still not empty, do not make request
 
 	def update(self):
 		self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
