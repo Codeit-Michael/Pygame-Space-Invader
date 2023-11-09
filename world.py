@@ -62,13 +62,12 @@ class World:
 		if keys[pygame.K_d] and not self.game_over or keys[pygame.K_RIGHT] and not self.game_over:
 			if self.player.sprite.rect.right < WIDTH:
 				self.player.sprite.move_right()
-		# might use these up and down buttons for future versions
-		# if keys[pygame.K_w] and not self.game_over or keys[pygame.K_UP] and not self.game_over:
-		# 	if self.player.sprite.rect.top > 0:
-		# 		self.player.sprite.move_up()		
-		# if keys[pygame.K_s] and not self.game_over or keys[pygame.K_DOWN] and not self.game_over:
-		# 	if self.player.sprite.rect.bottom < HEIGHT:
-		# 		self.player.sprite.move_bottom()
+		if keys[pygame.K_w] and not self.game_over or keys[pygame.K_UP] and not self.game_over:
+			if self.player.sprite.rect.top > 0:
+				self.player.sprite.move_up()		
+		if keys[pygame.K_s] and not self.game_over or keys[pygame.K_DOWN] and not self.game_over:
+			if self.player.sprite.rect.bottom < HEIGHT:
+				self.player.sprite.move_bottom()
 
 		# game restart button
 		if keys[pygame.K_r]:
@@ -139,6 +138,12 @@ class World:
 		if self.player.sprite.life <= 0:
 			self.game_over = True
 			self.display.game_over_message()
+		for alien in self.aliens.sprites():
+			if alien.rect.top >= HEIGHT:
+				self.game_over = True
+				self.display.game_over_message()
+				break
+
 		# check if next level
 		if len(self.aliens) == 0 and self.player.sprite.life > 0:
 			self.game_level += 1

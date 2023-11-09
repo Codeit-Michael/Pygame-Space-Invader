@@ -37,9 +37,6 @@ class Ship(pygame.sprite.Sprite):
 	def _shoot(self):
 		specific_pos = (self.rect.centerx - (BULLET_SIZE // 2), self.rect.y)
 		self.player_bullets.add(Bullet(specific_pos, BULLET_SIZE, "player"))
-		# import Bullet class
-		# generate bullet if called
-		# add bullet to srpite.group
 
 	def update(self):
 		self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
